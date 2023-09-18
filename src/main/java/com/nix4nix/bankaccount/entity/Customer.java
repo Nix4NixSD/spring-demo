@@ -1,9 +1,19 @@
 package com.nix4nix.bankaccount.entity;
 
-import lombok.Getter;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Getter
+@Setter
+@Data
+@Entity
+@Table(name = "customer")
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access=AccessLevel.PUBLIC, force=true)
 public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long customerId;
 
     private final String name;
@@ -14,11 +24,4 @@ public class Customer {
 
     private final String phone;
 
-    public Customer(Long customerId, String name, String surname, String email, String phone) {
-        this.customerId = customerId;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.phone = phone;
-    }
 }

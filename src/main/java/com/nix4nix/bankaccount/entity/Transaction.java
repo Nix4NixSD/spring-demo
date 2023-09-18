@@ -1,12 +1,22 @@
 package com.nix4nix.bankaccount.entity;
 
-import lombok.Getter;
+import lombok.*;
+
+import javax.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@Data
+@Entity
+@Table(name = "transaction")
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access=AccessLevel.PUBLIC, force=true)
 public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
     private final BigDecimal amount;
@@ -17,13 +27,7 @@ public class Transaction {
 
     private final String description;
 
+    @ManyToOne
     private final Account account;
 
-    public Transaction(BigDecimal amount, BigDecimal balance, LocalDateTime createdAt, String description, Account account) {
-        this.amount = amount;
-        this.balance = balance;
-        this.createdAt = createdAt;
-        this.description = description;
-        this.account = account;
-    }
 }
