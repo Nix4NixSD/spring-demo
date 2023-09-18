@@ -14,6 +14,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access= AccessLevel.PUBLIC, force=true)
 public class Account {
+    public enum AccountTypes {
+        BETAALREKENING,
+        SPAARREKENING,
+        HYPOTHEEKREKENING,
+        LENINGREKENING
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +29,13 @@ public class Account {
 
     private final BigDecimal balance;
 
-    private final String type;
+    // In a real world example we should probably move this to a separate table/entity
+    @Enumerated(EnumType.STRING)
+    private final AccountTypes type;
 
     private final LocalDateTime createdAt;
 
     @ManyToOne
     private final Customer owner;
+
 }
