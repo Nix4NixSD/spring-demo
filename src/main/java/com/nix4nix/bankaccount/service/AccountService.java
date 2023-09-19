@@ -1,34 +1,34 @@
 package com.nix4nix.bankaccount.service;
 
+import com.nix4nix.bankaccount.entity.Account;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.Entity;
 import java.util.Collection;
 
 @Service
-public class AccountService implements BaseService {
+public class AccountService implements BaseService<Account> {
+
     @Override
-    public void create(Entity entity) {
+    public void create(Account entity) {
 
     }
 
     @Override
-    public void update(Entity entity) {
+    public void update(Account entity) {
 
     }
 
     @Override
-    public void delete(Entity entity) {
+    public void delete(Account entity) {
 
     }
 
     @Override
-    public Entity get(Long id) {
+    public Account get(Long id) {
         return null;
     }
 
     @Override
-    public Collection<Entity> getAll() {
+    public Collection<Account> getAll() {
         return null;
     }
 }

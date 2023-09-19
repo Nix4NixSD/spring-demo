@@ -6,10 +6,10 @@ import java.util.Collection;
 /**
  * All services should have a standard set of methods.
  */
-public interface BaseService {
-    public abstract void create(Entity entity);
-    public abstract void update(Entity entity);
-    public abstract void delete(Entity entity);
-    public abstract Entity get(Long id);
-    public abstract Collection<Entity> getAll();
+public interface BaseService<T> {
+    public abstract void create(T entity);
+    public abstract void update(T entity);
+    public abstract void delete(T entity);
+    public abstract T get(Long id);
+    public abstract Collection<T> getAll();
 }

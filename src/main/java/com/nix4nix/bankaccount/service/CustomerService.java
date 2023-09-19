@@ -1,34 +1,51 @@
 package com.nix4nix.bankaccount.service;
 
-import org.springframework.stereotype.Service;
+import com.nix4nix.bankaccount.entity.Customer;
+import com.nix4nix.bankaccount.repository.CustomerRepository;
+import lombok.AllArgsConstructor;
 
-import javax.persistence.Entity;
+import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
-public class CustomerService implements BaseService {
-    @Override
-    public void create(Entity entity) {
+@AllArgsConstructor
+public class CustomerService implements BaseService<Customer> {
 
+    private CustomerRepository customerRepository;
+
+    @Override
+    public void create(Customer entity) {
+        customerRepository.save(entity);
     }
 
     @Override
-    public void update(Entity entity) {
-
+    public void update(Customer entity) {
+        if (customerRepository.existsById(entity.getId())) {
+            customerRepository.save(entity);
+        }
     }
 
     @Override
-    public void delete(Entity entity) {
-
+    public void delete(Customer entity) {
+        if (customerRepository.existsById(entity.getId())) {
+            customerRepository.delete(entity);
+        }
     }
 
     @Override
-    public Entity get(Long id) {
+    public Customer get(Long id) {
+        //TODO: Should use CustomerDTO, add mapper?
+
+        if (customerRepository.existsById(id)) {
+            return customerRepository.findById(id).get();
+        }
+
         return null;
     }
 
     @Override
-    public Collection<Entity> getAll() {
-        return null;
+    public Collection<Customer> getAll() {
+        //TODO: Should use CustomerDTO, add mapper?
+        return customerRepository.findAll();
     }
 }
