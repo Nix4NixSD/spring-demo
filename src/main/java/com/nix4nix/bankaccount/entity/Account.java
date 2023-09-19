@@ -23,7 +23,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long accountId;
+    private Long id;
 
     private final String accountNumber;
 
