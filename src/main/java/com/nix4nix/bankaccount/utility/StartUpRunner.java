@@ -2,7 +2,6 @@ package com.nix4nix.bankaccount.utility;
 
 import com.nix4nix.bankaccount.entity.Account;
 import com.nix4nix.bankaccount.entity.Customer;
-import com.nix4nix.bankaccount.entity.Transaction;
 import com.nix4nix.bankaccount.repository.AccountRepository;
 import com.nix4nix.bankaccount.repository.CustomerRepository;
 import com.nix4nix.bankaccount.repository.TransactionRepository;
@@ -55,10 +54,5 @@ public class StartUpRunner implements CommandLineRunner {
         balance = new BigDecimal("123.23");
         owner = customerRepository.findById(3L).get();
         accountRepository.save(new Account("NL99SPDB0987654321", balance, Account.AccountTypes.BETAALREKENING, LocalDateTime.now(), owner));
-    }
-
-    //Adds the transaction data using the TransactionRepository
-    private void addTransactionData() {
-        //TODO: Add some transaction test data
     }
 }
