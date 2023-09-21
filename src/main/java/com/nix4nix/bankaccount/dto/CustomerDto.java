@@ -1,5 +1,6 @@
 package com.nix4nix.bankaccount.dto;
 
+import com.nix4nix.bankaccount.entity.Customer;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Data
 public class CustomerDto {
-    private Long customerId;
+    private Long id;
 
     private String name;
 

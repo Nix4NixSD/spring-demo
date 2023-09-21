@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class TransactionDto {
-    private Long transactionId;
+    private Long id;
 
     private BigDecimal amount;
 

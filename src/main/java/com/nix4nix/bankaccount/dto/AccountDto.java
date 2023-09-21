@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class AccountDto {
-    private Long accountId;
+    private Long id;
 
     private String accountNumber;
 
