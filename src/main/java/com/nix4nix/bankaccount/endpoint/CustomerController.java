@@ -8,11 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller implementation.
+ * This controller is responsible for making endpoint visible to the client and doing calls to the
+ * service that belongs to this controller.
+ */
 @RestController
 @RequestMapping(CustomerController.BASE_URL)
 public class CustomerController {
     static final String BASE_URL = "/api/customer";
 
+    /*
+    In other classes we use the @AllArgsConstructor annotation which solved the required fields.
+    Autowired is a alternative way of getting the required fields for a class implementation.
+    Beware of Autowired entanglement though.
+     */
     @Autowired
     private CustomerService customerService;
 
