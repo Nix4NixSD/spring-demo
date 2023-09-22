@@ -12,13 +12,13 @@ public class TransactionService implements BaseService<TransactionDto, Transacti
     private ModelMapper modelMapper;
 
     @Override
-    public void create(TransactionDto entity) {
-
+    public TransactionDto create(TransactionDto entity) {
+        return null;
     }
 
     @Override
-    public void update(TransactionDto entity) {
-
+    public TransactionDto update(TransactionDto entity) {
+        return null;
     }
 
     @Override
