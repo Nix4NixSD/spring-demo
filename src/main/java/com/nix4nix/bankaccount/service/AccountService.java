@@ -1,9 +1,7 @@
 package com.nix4nix.bankaccount.service;
 
 import com.nix4nix.bankaccount.dto.AccountDto;
-import com.nix4nix.bankaccount.dto.CustomerDto;
 import com.nix4nix.bankaccount.entity.Account;
-import com.nix4nix.bankaccount.entity.Customer;
 import com.nix4nix.bankaccount.repository.AccountRepository;
 import com.nix4nix.bankaccount.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
@@ -22,13 +20,13 @@ public class AccountService implements BaseService<AccountDto, Account> {
     private ModelMapper modelMapper;
 
     @Override
-    public void create(AccountDto entity) {
-
+    public AccountDto create(AccountDto entity) {
+        return null;
     }
 
     @Override
-    public void update(AccountDto entity) {
-
+    public AccountDto update(AccountDto entity) {
+        return null;
     }
 
     @Override
@@ -38,13 +36,11 @@ public class AccountService implements BaseService<AccountDto, Account> {
 
     @Override
     public AccountDto get(Long id) {
-
         return null;
     }
 
     @Override
     public Collection<AccountDto> getAll() {
-        // TODO
         return null;
     }
 

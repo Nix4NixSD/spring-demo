@@ -11,6 +11,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
 
+/**
+ * Customer implementation of BaseService.
+ * This service is responsible for customer data operations and business logic.
+ */
 @Service
 @AllArgsConstructor
 public class CustomerService implements BaseService<CustomerDto, Customer> {
@@ -21,25 +25,39 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
 
     private ModelMapper modelMapper;
 
+    /**
+     *
+     * @param dto
+     * @return
+     */
     @Override
-    public void create(CustomerDto dto) {
+    public CustomerDto create(CustomerDto dto) {
         // TODO: Check if customer already exists
-//        if (customerRepository.existsById(dto.getId())) {
-            Customer entity = this.convertToEntity(dto);
-            customerRepository.save(entity);
-//        }
+        Customer entity = this.convertToEntity(dto);
+        Customer result = customerRepository.save(entity);
+        return this.convertToDto(result);
     }
 
+    /**
+     *
+     * @param dto
+     * @return
+     */
     @Override
-    public void update(CustomerDto dto) {
+    public CustomerDto update(CustomerDto dto) {
         if (customerRepository.existsById(dto.getId())) {
             Customer entity = this.convertToEntity(dto);
-            customerRepository.save(entity);
+            Customer result = customerRepository.save(entity);
+            return this.convertToDto(result);
         } else {
             throw new CustomerNotFoundException(dto.getId());
         }
     }
 
+    /**
+     *
+     * @param dto
+     */
     @Override
     public void delete(CustomerDto dto) {
         if (customerRepository.existsById(dto.getId())) {
@@ -50,6 +68,11 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Override
     public CustomerDto get(Long id) {
         if (customerRepository.findById(id).isPresent()) {
@@ -61,6 +84,10 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Collection<CustomerDto> getAll() {
         //TODO: Should use CustomerDTO, add mapper?
@@ -70,11 +97,21 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
         return null;
     }
 
+    /**
+     *
+     * @param entity
+     * @return
+     */
     @Override
     public CustomerDto convertToDto(Customer entity) {
         return modelMapper.map(entity, CustomerDto.class);
     }
 
+    /**
+     *
+     * @param dto
+     * @return
+     */
     @Override
     public Customer convertToEntity(CustomerDto dto) {
         return modelMapper.map(dto, Customer.class);

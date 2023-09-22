@@ -5,8 +5,8 @@ import java.util.Collection;
  * All services should have a standard set of methods.
  */
 public interface BaseService<T, E> {
-    public abstract void create(T dto);
-    public abstract void update(T dto);
+    public abstract T create(T dto);
+    public abstract T update(T dto);
     public abstract void delete(T dto);
     public abstract T get(Long id);
     public abstract Collection<T> getAll();
