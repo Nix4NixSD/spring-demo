@@ -4,8 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 @Data
 public class AccountDto {
@@ -21,5 +20,5 @@ public class AccountDto {
 
     private Long ownerId;
 
-    private List<TransactionDto> transactions = new ArrayList<>();
+    private Collection<TransactionDto> transactions;
 }

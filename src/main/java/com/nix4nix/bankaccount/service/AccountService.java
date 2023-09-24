@@ -3,6 +3,7 @@ package com.nix4nix.bankaccount.service;
 import com.nix4nix.bankaccount.controlleradvice.exception.AccountNotFoundException;
 import com.nix4nix.bankaccount.controlleradvice.exception.CustomerNotFoundException;
 import com.nix4nix.bankaccount.dto.AccountDto;
+import com.nix4nix.bankaccount.dto.TransactionDto;
 import com.nix4nix.bankaccount.entity.Account;
 import com.nix4nix.bankaccount.entity.Customer;
 import com.nix4nix.bankaccount.repository.AccountRepository;
@@ -23,7 +24,7 @@ public class AccountService implements BaseService<AccountDto, Account> {
 
     private CustomerRepository customerRepository;
 
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
 
     private ModelMapper modelMapper;
 
@@ -45,6 +46,10 @@ public class AccountService implements BaseService<AccountDto, Account> {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Collection<AccountDto> getAll() {
         Collection<Account> result = accountRepository.findAll();
@@ -82,7 +87,11 @@ public class AccountService implements BaseService<AccountDto, Account> {
 
             if (!result.isEmpty()) {
                 result.forEach(account -> {
-                    accounts.add(this.convertToDto(account));
+                    // Get transactions for this account and set them to the dto.
+                    AccountDto dto = this.convertToDto(account);
+                    Collection<TransactionDto> transactions = transactionService.getAllById(dto.getId());
+                    dto.setTransactions(transactions);
+                    accounts.add(dto);
                 });
             }
 
