@@ -1,7 +1,6 @@
 package com.nix4nix.bankaccount.dto;
 
 import lombok.Data;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -16,5 +15,5 @@ public class CustomerDto {
 
     private String phone;
 
-    private Collection<AccountDto> accounts = new ArrayList<>();
+    private Collection<AccountDto> accounts;
 }

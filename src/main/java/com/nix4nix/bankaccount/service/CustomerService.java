@@ -1,17 +1,14 @@
 package com.nix4nix.bankaccount.service;
 
 import com.nix4nix.bankaccount.controlleradvice.exception.CustomerNotFoundException;
-import com.nix4nix.bankaccount.controlleradvice.exception.NotImplementedException;
 import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.CustomerDto;
 import com.nix4nix.bankaccount.entity.Customer;
-import com.nix4nix.bankaccount.repository.AccountRepository;
 import com.nix4nix.bankaccount.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Collection;
 
