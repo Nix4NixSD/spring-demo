@@ -1,6 +1,8 @@
 package com.nix4nix.bankaccount.service;
 
 import com.nix4nix.bankaccount.controlleradvice.exception.CustomerNotFoundException;
+import com.nix4nix.bankaccount.controlleradvice.exception.NotImplementedException;
+import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.CustomerDto;
 import com.nix4nix.bankaccount.entity.Customer;
 import com.nix4nix.bankaccount.repository.AccountRepository;
@@ -9,6 +11,8 @@ import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import java.util.Collection;
 
 /**
@@ -19,7 +23,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class CustomerService implements BaseService<CustomerDto, Customer> {
 
-    /*
+    /* Note:
     These required fields are injected by the AllArgsConstructor annotation.
     The AllArgsConstructor annotation creates a constructor with all the needed arguments on the fly.
     Using these annotations make the code less cluttered. Alternative to this would be using springs autowired
@@ -29,7 +33,8 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
      */
     private CustomerRepository customerRepository;
 
-    private AccountRepository accountRepository;
+    // Using service since this contains the method that will retrieve all accounts for one customer.
+    private AccountService accountService;
 
     private ModelMapper modelMapper;
 
@@ -79,32 +84,25 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
     }
 
     /**
-     * TODO DOC
-     * @param id
-     * @return
+     * Tries to retrieve customer data based on the supplied id.
+     * If found, will return CustomerDto with Accounts and Transactions (if any)
+     * @param id Long customer id
+     * @return customer CustomerDto
      */
     @Override
     public CustomerDto get(Long id) {
         if (customerRepository.findById(id).isPresent()) {
-            // TODO: Get accountDto(s) from Account service and put account info into customerDto.
-
-
-
             CustomerDto dto = this.convertToDto(customerRepository.findById(id).get());
+            Collection<AccountDto> accounts = accountService.getAllById(dto.getId());
+            dto.setAccounts(accounts);
             return dto;
         } else {
             throw new CustomerNotFoundException(id);
         }
     }
 
-    /**
-     * Optional. Will implement this if there is time to spare.
-     * @return
-     */
     @Override
     public Collection<CustomerDto> getAll() {
-        //TODO: Should use CustomerDTO, add mapper?
-        // get all entity's from database and stream collection through the mapper.
         return null;
     }
 

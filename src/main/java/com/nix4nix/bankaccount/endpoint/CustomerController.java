@@ -33,7 +33,7 @@ public class CustomerController {
 
     @GetMapping("/get")
     public ResponseEntity<CustomerDto> getCustomers() {
-        throw new NotImplementedException("/get");
+        throw new NotImplementedException(BASE_URL + "/get");
     }
 
     @PostMapping("/create")
@@ -50,6 +50,6 @@ public class CustomerController {
 
     @DeleteMapping("/delete/{id}")
     public void deleteCustomer(@PathVariable Long id) {
-        throw new NotImplementedException("/delete/{id}");
+        throw new NotImplementedException(BASE_URL + "/delete/{id}");
     }
 }

@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -79,7 +77,6 @@ public class AccountService implements BaseService<AccountDto, Account> {
     public Collection<AccountDto> getAllById(Long customerId) {
         if (customerRepository.findById(customerId).isPresent()) {
             Collection<AccountDto> accounts = new ArrayList<>();
-
             Customer owner = customerRepository.findById(customerId).get();
             Collection<Account> result = accountRepository.findAllByOwner(owner);
 
@@ -87,9 +84,9 @@ public class AccountService implements BaseService<AccountDto, Account> {
                 result.forEach(account -> {
                     accounts.add(this.convertToDto(account));
                 });
-                return accounts;
             }
-            throw new AccountNotFoundException(customerId);
+
+            return accounts;
         }
         throw new CustomerNotFoundException(customerId);
     }
