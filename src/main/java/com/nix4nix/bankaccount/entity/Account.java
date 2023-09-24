@@ -25,6 +25,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, length = 18, nullable = false)
     private final String accountNumber;
 
     private final BigDecimal balance;

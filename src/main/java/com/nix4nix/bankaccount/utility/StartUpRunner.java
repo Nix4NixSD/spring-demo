@@ -53,6 +53,6 @@ public class StartUpRunner implements CommandLineRunner {
 
         balance = new BigDecimal("123.23");
         owner = customerRepository.findById(3L).get();
-        accountRepository.save(new Account("NL99SPDB0987654321", balance, Account.AccountTypes.BETAALREKENING, LocalDateTime.now(), owner));
+        accountRepository.save(new Account("NL99SPDB0001237465", balance, Account.AccountTypes.BETAALREKENING, LocalDateTime.now(), owner));
     }
 }
