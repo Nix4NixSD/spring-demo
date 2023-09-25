@@ -13,4 +13,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Returns all accounts which are owned by the given customer.
      */
     Collection<Account> findAllByOwner(Customer owner);
+    boolean existsAccountByAccountNumber(String accountNumber);
 }

@@ -1,5 +1,6 @@
 package com.nix4nix.bankaccount.controlleradvice;
 
+import com.nix4nix.bankaccount.controlleradvice.exception.AccountNotFoundException;
 import com.nix4nix.bankaccount.controlleradvice.exception.CustomerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Renders the exception straight into the response body with the status 404.
  */
 @ControllerAdvice
-public class AccountNotFoundAdvice implements BaseAdvice<CustomerNotFoundException> {
+public class AccountNotFoundAdvice implements BaseAdvice<AccountNotFoundException> {
 
     @ResponseBody
-    @ExceptionHandler(CustomerNotFoundException.class)
+    @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handler(CustomerNotFoundException e) {
+    public String handler(AccountNotFoundException e) {
         return e.getMessage();
     }
 }
