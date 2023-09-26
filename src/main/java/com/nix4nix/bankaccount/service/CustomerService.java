@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 
 /**
@@ -34,6 +35,25 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
     private AccountService accountService;
 
     private ModelMapper modelMapper;
+
+    /**
+     * Adding custom mappers for the dto to entity conversion since we use final fields in our entities.
+     * The default mapper used by the modelMapper will use getters and setters to map the data to the other class but
+     * since there are no getters and setters for our final fields, that will fail.
+     */
+    @PostConstruct
+    public void configureModelMapper() {
+        modelMapper.createTypeMap(CustomerDto.class, Customer.class).setConverter(mappingContext -> {
+            CustomerDto dto = mappingContext.getSource();
+            return new Customer(
+                    dto.getId(),
+                    dto.getName(),
+                    dto.getSurname(),
+                    dto.getEmail(),
+                    dto.getPhone()
+            );
+        });
+    }
 
     /**
      * Converts incoming dto to a database entity. Which we can save using the repository.
