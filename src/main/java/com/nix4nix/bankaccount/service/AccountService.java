@@ -14,9 +14,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.yaml.snakeyaml.util.EnumUtils;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Random;
 
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @AllArgsConstructor
 @Service
@@ -39,6 +38,32 @@ public class AccountService implements BaseService<AccountDto, Account> {
     private ModelMapper modelMapper;
 
     /**
+     * Adding custom mappers for the dto to entity conversion since we use final fields in our entities.
+     * The default mapper used by the modelMapper will use getters and setters to map the data to the other class but
+     * since there are no getters and setters for our final fields, that will fail.
+     */
+    @PostConstruct
+    public void configureModelMapper() {
+        modelMapper.createTypeMap(AccountDto.class, Account.class).setConverter(mappingContext -> {
+            System.out.println("Custom Converter Called");
+            AccountDto dto = mappingContext.getSource();
+
+            if (customerRepository.findById(dto.getOwnerId()).isEmpty()) {
+                throw new CustomerNotFoundException(dto.getOwnerId());
+            }
+
+            Customer owner = customerRepository.findById(dto.getOwnerId()).get();
+            return new Account(
+                    dto.getAccountNumber(),
+                    dto.getBalance(),
+                    dto.getType(),
+                    dto.getCreatedAt(),
+                    owner
+            );
+        });
+    }
+
+    /**
      * Customer opens new account.
      * @param dto AccountDto
      * @return AccountDto result
@@ -46,10 +71,14 @@ public class AccountService implements BaseService<AccountDto, Account> {
     @Override
     public AccountDto create(AccountDto dto) {
         dto.setAccountNumber(this.generateNewAccountNumber());
-        if (!ObjectUtils.containsConstant(Account.AccountTypes.values(), dto.getType())) {
+
+        boolean existsAsEnum = EnumSet.allOf(Account.AccountTypes.class)
+                .stream().anyMatch(value -> value.name().equals(dto.getType().name()));
+        if (!existsAsEnum) {
             throw new AccountMalformedException(dto, "Invalid AccountType given.");
         }
-        dto.setBalance(new BigDecimal(0));
+
+        dto.setBalance(dto.getBalance());
         dto.setCreatedAt(LocalDateTime.now());
 
         Account result = accountRepository.save(this.convertToEntity(dto));
@@ -138,8 +167,13 @@ public class AccountService implements BaseService<AccountDto, Account> {
     public String generateNewAccountNumber() {
         Random value = new Random();
         final String bank = "NL99SPDB";
-        int number = value.nextInt(10);
-        String accountNumber = bank.concat(String.valueOf(number));
+        String accountNumber = "";
+
+        for (int i = 0; i < 10; i++) {
+            int number = value.nextInt(10);
+            accountNumber = accountNumber.concat(String.valueOf(number));
+        }
+        accountNumber = bank.concat(accountNumber);
 
         /*
         Matcher config with the "decription" of the thing we are looking for.
@@ -148,12 +182,12 @@ public class AccountService implements BaseService<AccountDto, Account> {
          */
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnorePaths("id")
-                .withMatcher("accountNumber", ignoreCase());
+                .withIgnoreNullValues()
+                .withMatcher("accountNumber", exact());
 
         // Creating probe object and Example object to use for our search.
-        AccountDto probe = new AccountDto();
-        probe.setAccountNumber(accountNumber);
-        Example<Account> example = Example.of(this.convertToEntity(probe));
+        Account probe2 = new Account(accountNumber, null, null, null, null);
+        Example<Account> example = Example.of(probe2, matcher);
 
         if (accountRepository.exists(example)) {
             // The database contains an account with the generated accountNumber.
@@ -161,6 +195,24 @@ public class AccountService implements BaseService<AccountDto, Account> {
         }
 
         // Unique account number.
-        return bank.concat(accountNumber);
+        return accountNumber;
+    }
+
+    /**
+     * Checks if the given account type exists as enum in the Account.AccountTypes enum.
+     * @param accountType String
+     * @return boolean
+     */
+    public Account.AccountTypes ValidateAccountType(String accountType) {
+        // With the use of EnumSet we can stream the whole enum and check if the given value is in the set.
+        String typeUc = accountType.toUpperCase();
+        boolean existsAsEnum = EnumSet.allOf(Account.AccountTypes.class)
+                .stream().anyMatch(value -> value.name().equals(typeUc));
+
+        if (!existsAsEnum) {
+            throw new AccountMalformedException("Invalid account type ".concat(accountType));
+        }
+
+        return Account.AccountTypes.valueOf(typeUc);
     }
 }

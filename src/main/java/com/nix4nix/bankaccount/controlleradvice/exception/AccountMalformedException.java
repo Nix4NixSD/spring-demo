@@ -11,4 +11,7 @@ public class AccountMalformedException extends RuntimeException{
     public AccountMalformedException(AccountDto dto, String reason) {
         super("AccountDto is malformed. ".concat(reason) + " ".concat(dto.toString()));
     }
+    public AccountMalformedException(String reason) {
+        super("AccountDto is malformed. ".concat(reason));
+    }
 }

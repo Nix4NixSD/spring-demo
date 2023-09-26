@@ -4,6 +4,7 @@ import com.nix4nix.bankaccount.controlleradvice.exception.NotImplementedExceptio
 import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.CreateAccountDto;
 import com.nix4nix.bankaccount.dto.TransactionDto;
+import com.nix4nix.bankaccount.entity.Account;
 import com.nix4nix.bankaccount.entity.Transaction;
 import com.nix4nix.bankaccount.service.AccountService;
 import com.nix4nix.bankaccount.service.TransactionService;
@@ -31,7 +32,10 @@ public class AccountController {
     public ResponseEntity<AccountDto> createAccount(@RequestBody CreateAccountDto createAccountDto) {
         AccountDto accountDto = new AccountDto();
         accountDto.setOwnerId(createAccountDto.getCustomerId());
-        accountDto.setType(createAccountDto.getAccountType());
+
+        // Validate and get the correct Account.AccountType enum value
+        Account.AccountTypes type = accountService.ValidateAccountType(createAccountDto.getAccountType());
+        accountDto.setType(type);
 
         // Check if the initialCredit is greater than zero because then we need to initiate a transaction
         if (createAccountDto.getInitialCredit().compareTo(BigDecimal.ZERO) > 0) {
@@ -43,13 +47,17 @@ public class AccountController {
             Maybe create a class "TransactionResolver" that is responsible for handling those transactions. Where checks
             will be done and the addition/subtraction of the amounts from/to the accounts.
              */
+
+            //TODO: The account cannot have an id when it is not created yet. Move account creation up and this transaction creation will have an accountId.
             TransactionDto transactionDto = new TransactionDto();
-            transactionDto.setType(String.valueOf(Transaction.TransactionTypes.ADD));
+            transactionDto.setType(Transaction.TransactionTypes.ADD);
             transactionDto.setCreatedAt(LocalDateTime.now());
-            transactionDto.setBalance(accountDto.getBalance()); //The balance on the moment of transaction
+            transactionDto.setBalance(accountDto.getBalance()); // The balance on the moment of transaction
             transactionDto.setAmount(createAccountDto.getInitialCredit());
+            transactionDto.setAccountId(accountDto.getId());
             transactionService.create(transactionDto);
 
+            // Update account with new balance.
             accountDto.setBalance(createAccountDto.getInitialCredit());
         }
 

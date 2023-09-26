@@ -1,5 +1,6 @@
 package com.nix4nix.bankaccount.dto;
 
+import com.nix4nix.bankaccount.entity.Account;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class AccountDto {
 
     private BigDecimal balance;
 
-    private String type;
+    private Account.AccountTypes type;
 
     private LocalDateTime createdAt;
 
