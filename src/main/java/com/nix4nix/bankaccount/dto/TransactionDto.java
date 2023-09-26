@@ -1,5 +1,6 @@
 package com.nix4nix.bankaccount.dto;
 
+import com.nix4nix.bankaccount.entity.Transaction;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 public class TransactionDto {
     private Long id;
 
-    private String type;
+    private Transaction.TransactionTypes type;
 
     private BigDecimal amount;
 
@@ -18,4 +19,6 @@ public class TransactionDto {
     private LocalDateTime createdAt;
 
     private String description;
+
+    private Long accountId;
 }
