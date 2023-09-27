@@ -1,6 +1,5 @@
 package com.nix4nix.bankaccount.endpoint;
 
-import com.nix4nix.bankaccount.controlleradvice.exception.NotImplementedException;
 import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.CreateAccountDto;
 import com.nix4nix.bankaccount.dto.TransactionDto;
@@ -28,6 +27,11 @@ public class AccountController {
     @Autowired
     private TransactionService transactionService;
 
+    /**
+     * Will open a new account and initiate a transaction whenever the given Initial credit is greater than 0.
+     * @param createAccountDto CreateAccountDto
+     * @return ResponseEntity<AccountDto>
+     */
     @PostMapping("/create")
     public ResponseEntity<AccountDto> createAccount(@RequestBody CreateAccountDto createAccountDto) {
         AccountDto accountDto = new AccountDto();
@@ -36,6 +40,10 @@ public class AccountController {
         // Validate and get the correct Account.AccountType enum value
         Account.AccountTypes type = accountService.ValidateAccountType(createAccountDto.getAccountType());
         accountDto.setType(type);
+
+        // Update account with new balance.
+        accountDto.setBalance(createAccountDto.getInitialCredit());
+        AccountDto accountResult = accountService.create(accountDto);
 
         // Check if the initialCredit is greater than zero because then we need to initiate a transaction
         if (createAccountDto.getInitialCredit().compareTo(BigDecimal.ZERO) > 0) {
@@ -48,21 +56,19 @@ public class AccountController {
             will be done and the addition/subtraction of the amounts from/to the accounts.
              */
 
-            //TODO: The account cannot have an id when it is not created yet. Move account creation up and this transaction creation will have an accountId.
             TransactionDto transactionDto = new TransactionDto();
             transactionDto.setType(Transaction.TransactionTypes.ADD);
             transactionDto.setCreatedAt(LocalDateTime.now());
-            transactionDto.setBalance(accountDto.getBalance()); // The balance on the moment of transaction
+            transactionDto.setBalance(BigDecimal.ZERO); // New account so the balance is zero.
             transactionDto.setAmount(createAccountDto.getInitialCredit());
-            transactionDto.setAccountId(accountDto.getId());
+            transactionDto.setAccountId(accountResult.getId());
             transactionService.create(transactionDto);
 
-            // Update account with new balance.
-            accountDto.setBalance(createAccountDto.getInitialCredit());
+            // Fetch the account to also get the new transaction data
+            accountResult = accountService.get(accountResult.getId());
         }
 
-        AccountDto result = accountService.create(accountDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(accountResult, HttpStatus.OK);
     }
 
     @GetMapping("/get")

@@ -7,6 +7,7 @@ import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.TransactionDto;
 import com.nix4nix.bankaccount.entity.Account;
 import com.nix4nix.bankaccount.entity.Customer;
+import com.nix4nix.bankaccount.entity.Transaction;
 import com.nix4nix.bankaccount.repository.AccountRepository;
 import com.nix4nix.bankaccount.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -93,13 +94,26 @@ public class AccountService implements BaseService<AccountDto, Account> {
     @Override
     public void delete(AccountDto dto) {}
 
+    /**
+     *
+     * @param id Long accountId
+     * @return null||AccountDto
+     */
     @Override
     public AccountDto get(Long id) {
+        if (accountRepository.findById(id).isPresent()) {
+            Account account = accountRepository.findById(id).get();
+            Collection<TransactionDto> transactions = transactionService.getAllById(account.getId());
+            AccountDto dto = this.convertToDto(account);
+            dto.setTransactions(transactions);
+            return dto;
+        }
+
         return null;
     }
 
     /**
-     *
+     * Returns all accounts
      * @return
      */
     @Override
@@ -109,7 +123,11 @@ public class AccountService implements BaseService<AccountDto, Account> {
 
         if (!result.isEmpty()) {
             result.forEach(account -> {
-                accounts.add(this.convertToDto(account));
+                Collection<TransactionDto> transactions = transactionService.getAllById(account.getId());
+                AccountDto dto = this.convertToDto(account);
+                dto.setTransactions(transactions);
+
+                accounts.add(dto);
             });
             return accounts;
         }
@@ -200,8 +218,11 @@ public class AccountService implements BaseService<AccountDto, Account> {
 
     /**
      * Checks if the given account type exists as enum in the Account.AccountTypes enum.
-     * @param accountType String
-     * @return boolean
+     * Returns the correct enum value if the given string exists in the enum.
+     * This method will use String.toUpperCade(); to make sure all given Strings are uppercase, since
+     * all the enums are also uppercased.
+     * @param accountType String accountType
+     * @return Account.AccountTypes
      */
     public Account.AccountTypes ValidateAccountType(String accountType) {
         // With the use of EnumSet we can stream the whole enum and check if the given value is in the set.
@@ -213,6 +234,7 @@ public class AccountService implements BaseService<AccountDto, Account> {
             throw new AccountMalformedException("Invalid account type ".concat(accountType));
         }
 
+        // Return the Enum datatype since that is expected.
         return Account.AccountTypes.valueOf(typeUc);
     }
 }
