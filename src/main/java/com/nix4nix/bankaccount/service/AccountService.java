@@ -7,7 +7,6 @@ import com.nix4nix.bankaccount.dto.AccountDto;
 import com.nix4nix.bankaccount.dto.TransactionDto;
 import com.nix4nix.bankaccount.entity.Account;
 import com.nix4nix.bankaccount.entity.Customer;
-import com.nix4nix.bankaccount.entity.Transaction;
 import com.nix4nix.bankaccount.repository.AccountRepository;
 import com.nix4nix.bankaccount.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;

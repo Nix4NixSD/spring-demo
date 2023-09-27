@@ -63,7 +63,6 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
      */
     @Override
     public CustomerDto create(CustomerDto dto) {
-        // TODO: -Optional- Check if customer already exists
         Customer entity = this.convertToEntity(dto);
         Customer result = customerRepository.save(entity);
         return this.convertToDto(result);
@@ -92,7 +91,7 @@ public class CustomerService implements BaseService<CustomerDto, Customer> {
      */
     @Override
     public void delete(CustomerDto dto) {
-        if (customerRepository.existsById(dto.getId())) {
+        if (customerRepository.findById(dto.getId()).isPresent()) {
             Customer entity = this.convertToEntity(dto);
             customerRepository.delete(entity);
         } else {
