@@ -32,20 +32,30 @@ public class TransactionHandlerService {
     //TODO: The mapping functions need to be centralized, currently importing a whole service just for the mapping.
     private final AccountService accountService;
 
+    /**
+     * If a problem ever arises springboot should rollback this @Transactional method.
+     * Though before using this testing should be done.
+     * @param accountId
+     * @param amount
+     */
     @Transactional
     public void makeDeposit(Long accountId, BigDecimal amount) {
+        // Check if an account exists
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
 
         BigDecimal currentBalance = account.getBalance();
         BigDecimal newBalance = currentBalance.add(amount);
 
+        // Convert to dto because entity fields are final.
         AccountDto dto = accountService.convertToDto(account);
         dto.setBalance(newBalance);
 
+        // Convert back to entity and save the entity to the database.
         account = accountService.convertToEntity(dto);
         accountRepository.save(account);
 
+        // Finally add the transaction
         Transaction transaction = new Transaction(
                 Transaction.TransactionTypes.ADD,
                 amount,
