@@ -6,9 +6,21 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Let's say our api does a lot of searching on accountNumber, which is quite realistic for an api involving accounts
+ * and transactions. If we put an index on the accountNumber performance probably improves. Adding an index will result in:
+ *
+ * Faster Data Retrieval
+ * Improved Query Performance
+ * Reduced disk I/O
+ *
+ * And many more depending on the situation and if our application will do a lot for sorting and searching.
+ */
 @Data
 @Entity
-@Table(name = "account")
+@Table(name = "account", indexes = {
+        @Index(name = "idx_account_number", columnList = "accountNumber")
+})
 @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access= AccessLevel.PUBLIC, force=true)
 public class Account {
