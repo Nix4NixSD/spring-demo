@@ -36,6 +36,7 @@ public class CustomerServiceTest {
 
     @Test
     public void testCreate() {
+        // Arrange test data
         Customer entity = new Customer(999L, "T", "Tester", "", "");
         CustomerDto dto = new CustomerDto();
         dto.setId(999L);
@@ -56,9 +57,10 @@ public class CustomerServiceTest {
         when(customerService.convertToDto(entity)).thenReturn(dto);
         when(customerRepository.save(entity)).thenReturn(entity);
 
+        // Act and Assert (AAA)
         CustomerDto result = customerService.create(dto);
-        assertEquals(result.getId(), expected.getId());
-        assertEquals(result.getName(), expected.getName());
+        assertEquals(expected.getId(), result.getId());
+        assertEquals(expected.getName(), result.getName());
     }
 
     @Test

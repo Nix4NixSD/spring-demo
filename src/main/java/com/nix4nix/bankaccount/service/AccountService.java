@@ -222,7 +222,7 @@ public class AccountService implements BaseService<AccountDto, Account> {
      * @param accountType String accountType
      * @return Account.AccountTypes
      */
-    public Account.AccountTypes ValidateAccountType(String accountType) {
+    public Account.AccountTypes validateAccountType(String accountType) {
         // With the use of EnumSet we can stream the whole enum and check if the given value is in the set.
         String typeUc = accountType.toUpperCase();
         boolean existsAsEnum = EnumSet.allOf(Account.AccountTypes.class)

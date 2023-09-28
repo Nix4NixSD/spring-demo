@@ -38,7 +38,7 @@ public class AccountController {
         accountDto.setOwnerId(createAccountDto.getCustomerId());
 
         // Validate and get the correct Account.AccountType enum value
-        Account.AccountTypes type = accountService.ValidateAccountType(createAccountDto.getAccountType());
+        Account.AccountTypes type = accountService.validateAccountType(createAccountDto.getAccountType());
         accountDto.setType(type);
 
         // Update account with new balance.
