@@ -44,7 +44,6 @@ public class AccountService implements BaseService<AccountDto, Account> {
     @PostConstruct
     public void configureModelMapper() {
         modelMapper.createTypeMap(AccountDto.class, Account.class).setConverter(mappingContext -> {
-            System.out.println("Custom Converter Called");
             AccountDto dto = mappingContext.getSource();
 
             if (customerRepository.findById(dto.getOwnerId()).isEmpty()) {

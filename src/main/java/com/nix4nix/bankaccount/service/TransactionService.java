@@ -13,6 +13,10 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @AllArgsConstructor
 public class TransactionService implements BaseService<TransactionDto, Transaction> {
@@ -49,6 +53,8 @@ public class TransactionService implements BaseService<TransactionDto, Transacti
         });
     }
 
+    // Default config for Transactional, this is how the Transactional is configured.
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, timeout = 60, readOnly = false, rollbackFor = Exception.class)
     @Override
     public TransactionDto create(TransactionDto dto) {
         Transaction entity = this.convertToEntity(dto);
